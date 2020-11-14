@@ -662,7 +662,7 @@ namespace Microsoft.EntityFrameworkCore.SqlServer.Internal
         }
 
         /// <summary>
-        ///     Savepoints are disabled because Multiple Active Result Sets is enabled. When saving changes, the transaction will not be rolled back if error occurs, and may be left in an unknown state. See https://docs.microsoft.com/en-us/ef/core/saving/transactions#savepoints for more information. To identify the code which triggers this warning, call 'ConfigureWarnings(w =&gt; w.Throw(RelationalEventId.SavepointsDisabledBecauseOfMARS))'.
+        ///     Savepoints are disabled because Multiple Active Result Sets is enabled. When saving changes with a manual transaction, the transaction will not be rolled back if error occurs, and may be left in an unknown state. See https://docs.microsoft.com/en-us/ef/core/saving/transactions#savepoints for more information. To identify the code which triggers this warning, call 'ConfigureWarnings(w =&gt; w.Throw(RelationalEventId.SavepointsDisabledBecauseOfMARS))'.
         /// </summary>
         public static EventDefinition LogSavepointsDisabledBecauseOfMARS([NotNull] IDiagnosticsLogger logger)
         {
