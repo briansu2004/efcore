@@ -25,12 +25,10 @@ namespace Microsoft.EntityFrameworkCore
         [InlineData(false)]
         public virtual async Task Savepoints_are_disabled_with_MARS(bool async)
         {
-            await using var context = CreateContext();
+            await using var context = CreateContextWithConnectionString(
+                SqlServerTestStore.CreateConnectionString(TestStore.Name, multipleActiveResultSets: true));
 
-            context.Database.SetDbConnection(
-                new SqlConnection(TestStore.ConnectionString + ";MultipleActiveResultSets=True"));
-
-            var transaction = await context.Database.BeginTransactionAsync();
+            await using var transaction = await context.Database.BeginTransactionAsync();
 
             var orderId = 300;
             foreach (var _ in context.Set<TransactionCustomer>())
@@ -58,12 +56,16 @@ namespace Microsoft.EntityFrameworkCore
             => true;
 
         protected override DbContext CreateContextWithConnectionString()
+            => CreateContextWithConnectionString(null);
+
+        protected DbContext CreateContextWithConnectionString(string connectionString)
         {
             var options = Fixture.AddOptions(
                     new DbContextOptionsBuilder()
                         .UseSqlServer(
-                            TestStore.ConnectionString,
+                            connectionString ?? TestStore.ConnectionString,
                             b => b.ApplyConfiguration().ExecutionStrategy(c => new SqlServerExecutionStrategy(c))))
+                .ConfigureWarnings(b => b.Log(SqlServerEventId.SavepointsDisabledBecauseOfMARS))
                 .UseInternalServiceProvider(Fixture.ServiceProvider);
 
             return new DbContext(options.Options);
@@ -72,7 +74,7 @@ namespace Microsoft.EntityFrameworkCore
         public class TransactionSqlServerFixture : TransactionFixtureBase
         {
             protected override ITestStoreFactory TestStoreFactory
-                => SqlServerTestStoreFactory.Instance;
+                => new SqlServerTestStoreFactory(multipleActiveResultSets: false);
 
             protected override void Seed(PoolableDbContext context)
             {
