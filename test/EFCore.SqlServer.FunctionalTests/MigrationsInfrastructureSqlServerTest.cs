@@ -1411,10 +1411,8 @@ DROP DATABASE TransactionSuppressed");
 
             public override MigrationsContext CreateContext()
             {
-                var options = AddOptions(
-                        new DbContextOptionsBuilder()
-                            .UseSqlServer(TestStore.ConnectionString, b => b.ApplyConfiguration()))
-                    .ConfigureWarnings(b => b.Ignore(SqlServerEventId.SavepointsDisabledBecauseOfMARS))
+                var options = AddOptions(TestStore.AddProviderOptions(new DbContextOptionsBuilder()))
+                    .UseSqlServer(TestStore.ConnectionString, b => b.ApplyConfiguration())
                     .UseInternalServiceProvider(ServiceProvider)
                     .Options;
                 return new MigrationsContext(options);
