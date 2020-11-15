@@ -28,8 +28,8 @@ namespace Microsoft.EntityFrameworkCore.TestUtilities
             => (SqlServerTestStore)SqlServerNorthwindTestStoreFactory.Instance
                 .GetOrCreate(SqlServerNorthwindTestStoreFactory.Name).Initialize(null, (Func<DbContext>)null);
 
-        public static SqlServerTestStore GetOrCreate(string name, bool? multipleActiveResultSets = null)
-            => new SqlServerTestStore(name, multipleActiveResultSets: multipleActiveResultSets);
+        public static SqlServerTestStore GetOrCreate(string name)
+            => new SqlServerTestStore(name);
 
         public static SqlServerTestStore GetOrCreateInitialized(string name)
             => new SqlServerTestStore(name).InitializeSqlServer(null, (Func<DbContext>)null, null);
@@ -37,8 +37,8 @@ namespace Microsoft.EntityFrameworkCore.TestUtilities
         public static SqlServerTestStore GetOrCreate(string name, string scriptPath, bool? multipleActiveResultSets = null)
             => new SqlServerTestStore(name, scriptPath: scriptPath, multipleActiveResultSets: multipleActiveResultSets);
 
-        public static SqlServerTestStore Create(string name, bool useFileName = false, bool? multipleActiveResultSets = null)
-            => new SqlServerTestStore(name, useFileName, shared: false, multipleActiveResultSets: multipleActiveResultSets);
+        public static SqlServerTestStore Create(string name, bool useFileName = false)
+            => new SqlServerTestStore(name, useFileName, shared: false);
 
         public static SqlServerTestStore CreateInitialized(string name, bool useFileName = false, bool? multipleActiveResultSets = null)
             => new SqlServerTestStore(name, useFileName, shared: false, multipleActiveResultSets: multipleActiveResultSets)

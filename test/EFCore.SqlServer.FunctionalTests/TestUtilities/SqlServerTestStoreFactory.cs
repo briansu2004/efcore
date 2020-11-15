@@ -7,18 +7,17 @@ namespace Microsoft.EntityFrameworkCore.TestUtilities
 {
     public class SqlServerTestStoreFactory : RelationalTestStoreFactory
     {
-        private readonly bool? _multipleActiveResultSets;
-
         public static SqlServerTestStoreFactory Instance { get; } = new SqlServerTestStoreFactory();
 
-        public SqlServerTestStoreFactory(bool? multipleActiveResultSets = null)
-            => _multipleActiveResultSets = multipleActiveResultSets;
+        protected SqlServerTestStoreFactory()
+        {
+        }
 
         public override TestStore Create(string storeName)
-            => SqlServerTestStore.Create(storeName, multipleActiveResultSets: _multipleActiveResultSets);
+            => SqlServerTestStore.Create(storeName);
 
         public override TestStore GetOrCreate(string storeName)
-            => SqlServerTestStore.GetOrCreate(storeName, _multipleActiveResultSets);
+            => SqlServerTestStore.GetOrCreate(storeName);
 
         public override IServiceCollection AddProviderServices(IServiceCollection serviceCollection)
             => serviceCollection.AddEntityFrameworkSqlServer();

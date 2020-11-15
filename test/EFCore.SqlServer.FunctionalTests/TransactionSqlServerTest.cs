@@ -49,6 +49,12 @@ namespace Microsoft.EntityFrameworkCore
             Assert.Contains(Fixture.ListLoggerFactory.Log, t => t.Id == SqlServerEventId.SavepointsDisabledBecauseOfMARS);
         }
 
+        // Test relies on savepoints, which are disabled when MARS is enabled
+        public override Task SaveChanges_uses_explicit_transaction_with_failure_behavior(bool async, bool autoTransaction)
+            => new SqlConnectionStringBuilder(TestStore.ConnectionString).MultipleActiveResultSets
+                ? Task.CompletedTask
+                : base.SaveChanges_uses_explicit_transaction_with_failure_behavior(async, autoTransaction);
+
         protected override bool SnapshotSupported
             => true;
 
@@ -74,7 +80,7 @@ namespace Microsoft.EntityFrameworkCore
         public class TransactionSqlServerFixture : TransactionFixtureBase
         {
             protected override ITestStoreFactory TestStoreFactory
-                => new SqlServerTestStoreFactory(multipleActiveResultSets: false);
+                => SqlServerTestStoreFactory.Instance;
 
             protected override void Seed(PoolableDbContext context)
             {
